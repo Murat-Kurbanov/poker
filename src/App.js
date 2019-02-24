@@ -1,28 +1,39 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Card from './components/Card/Card';
+import CardDeck from './services/cards/card-deck';
+import CardHand from "./services/cards/card-hand";
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+    constructor(props) {
+        super(props);
+        this.cardDeck = new CardDeck();
+        this.state = {
+            myCards: this.cardDeck.getCards(5),
+        };
+    }
+
+    shuffleCard = () => {
+        this.cardDeck.newDeck();
+        this.setState({ myCards: this.cardDeck.getCards(5) });
+    };
+
+    render() {
+        const { myCards } = this.state;
+
+        const myNewCards = myCards.map(card => <Card key={card.rank + card.suit} rank={card.rank} suit={card.suit} />);
+        const title = CardHand.getCardHand(myCards);
+        console.log(title);
+        return (
+            <>
+                {title}
+                <hr/>
+                <button onClick={this.shuffleCard}>shuffle cards</button>
+                <hr />
+                {myNewCards}
+            </>
+        )
+    }
 }
 
 export default App;
